@@ -1,0 +1,10 @@
+{
+  "description": "Explore GISCARD NGABONZIZA’s portfolio of digital projects, creative services, experience, and skills, and connect for web, software, design, and marketing work.",
+  "robots": {
+    "index": true
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
