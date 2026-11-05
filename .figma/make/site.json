@@ -1,5 +1,13 @@
 {
-  "description": "Explore GISCARD NGABONZIZA’s portfolio of digital projects, creative services, experience, and skills, and connect for web, software, design, and marketing work.",
+  "title": "Giscard Ngabonziza — Digital Designer & Developer",
+  "description": "Explore Giscard Ngabonziza’s selected portfolio of websites, mobile apps, UI/UX, branding and social-first creative work — delivered across 6+ markets from Kigali, Rwanda.",
+  "language": "en",
+  "icons": {
+    "icon": "/favicon.png"
+  },
+  "openGraph": {
+    "image": "/Giscard.jpg"
+  },
   "robots": {
     "index": true
   },
