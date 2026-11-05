@@ -415,7 +415,7 @@ export const skillGroups = [
   {
     label: "Design",
     skills: [
-      "Figma",
+      "Giscard",
       "Adobe Premiere",
       "UI/UX Design",
       "Responsive Design",

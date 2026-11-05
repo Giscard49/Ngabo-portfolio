@@ -4,16 +4,16 @@ import tailwindcss from '@tailwindcss/vite'
 import fs from 'node:fs'
 import path from 'node:path'
 
-import siteConfiguration from './.figma/make/site.json'
+import siteConfiguration from './.giscard/make/site.json'
 
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
+  // .giscard/make/deploy-preview passes `--mode development` for cached-preview builds.
   const emitSourcemaps = mode === 'development'
 
   return {
-    base: process.env.FIGMA_PUBLIC_URL ? `${process.env.FIGMA_PUBLIC_URL}/` : '/',
+    base: process.env.GISCARD_PUBLIC_URL ? `${process.env.GISCARD_PUBLIC_URL}/` : '/',
     build: {
       sourcemap: emitSourcemaps ? 'inline' : false,
       minify: !emitSourcemaps,
@@ -21,11 +21,11 @@ export default defineConfig(({ mode }) => {
     plugins: [
 react(),
       tailwindcss(),
-      figmaSiteConfiguration(siteConfiguration),
-      figmaErrorOverlayReplay(),
-      figmaReactRefreshBoundaryFallback(),
-      figmaMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),
-      figmaLinkedPackageSourcemaps(),
+      giscardSiteConfiguration(siteConfiguration),
+      giscardErrorOverlayReplay(),
+      giscardReactRefreshBoundaryFallback(),
+      giscardMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),
+      giscardLinkedPackageSourcemaps(),
     ],
     resolve: {
       alias: {
@@ -33,23 +33,23 @@ react(),
       },
     },
     server: {
-      host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
+      host: process.env.GISCARD_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '3000'),
       strictPort: true,
       watch: {
         ignored: [
-          '**/.figma/**',
+          '**/.giscard/**',
 ],
       },
     },
     preview: {
-      host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
+      host: process.env.GISCARD_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '3000'),
     },
   }
 })
 
-type FigmaSiteConfiguration = {
+type GiscardSiteConfiguration = {
   title?: string
   description?: string
   language?: string
@@ -76,8 +76,8 @@ type FigmaSiteConfiguration = {
   }
 }
 
-/** Applies /.figma/make/site.json to the generated document shell. */
-function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
+/** Applies /.giscard/make/site.json to the generated document shell. */
+function giscardSiteConfiguration(config: GiscardSiteConfiguration): Plugin {
   function sanitizeHtmlValue(value: string | undefined): string {
     return value?.replace(/[^a-zA-Z0-9_-]/g, '') || ''
   }
@@ -103,7 +103,7 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
   const robotsTxt = config.robots?.index === false ? 'User-agent: *\nDisallow: /\n' : ''
 
   return {
-    name: 'figma-site-configuration',
+    name: 'giscard-site-configuration',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         if (!robotsTxt || req.url?.split('?')[0] !== '/robots.txt') return next()
@@ -125,12 +125,12 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
       order: 'pre',
       handler(html) {
         let result = html
-        result = replaceHtmlCommentSlot(result, 'figma:lang', language)
-        result = replaceHtmlCommentSlot(result, 'figma:title', escapeHtmlText(title))
-        result = replaceHtmlCommentSlot(result, 'figma:head-start', headStart)
-        result = replaceHtmlCommentSlot(result, 'figma:head-end', headEnd)
-        result = replaceHtmlCommentSlot(result, 'figma:body-start', bodyStart)
-        result = replaceHtmlCommentSlot(result, 'figma:body-end', bodyEnd)
+        result = replaceHtmlCommentSlot(result, 'giscard:lang', language)
+        result = replaceHtmlCommentSlot(result, 'giscard:title', escapeHtmlText(title))
+        result = replaceHtmlCommentSlot(result, 'giscard:head-start', headStart)
+        result = replaceHtmlCommentSlot(result, 'giscard:head-end', headEnd)
+        result = replaceHtmlCommentSlot(result, 'giscard:body-start', bodyStart)
+        result = replaceHtmlCommentSlot(result, 'giscard:body-end', bodyEnd)
 
         const tags: HtmlTagDescriptor[] = []
         if (description) {
@@ -184,7 +184,7 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
             {
               tag: 'style',
               children: `
-  .figma-bypass-link {
+  .giscard-bypass-link {
     position: fixed;
     top: 8px;
     left: 8px;
@@ -197,7 +197,7 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
     font: 600 14px/1.2 system-ui, sans-serif;
     text-decoration: none;
   }
-  .figma-bypass-link:focus {
+  .giscard-bypass-link:focus {
     transform: translateY(0);
   }
 `,
@@ -205,7 +205,7 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
             },
             {
               tag: 'a',
-              attrs: { class: 'figma-bypass-link', href: '#root' },
+              attrs: { class: 'giscard-bypass-link', href: '#root' },
               children: 'Skip to content',
               injectTo: 'body-prepend',
             },
@@ -234,9 +234,9 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
  * `update` or `full-reload` so a stale overlay can't survive a
  * fixed build.
  */
-function figmaErrorOverlayReplay(): Plugin {
+function giscardErrorOverlayReplay(): Plugin {
   return {
-    name: 'figma-error-overlay-replay',
+    name: 'giscard-error-overlay-replay',
     apply: 'serve',
     configureServer(server) {
       let lastError: object | null = null
@@ -276,14 +276,14 @@ function figmaErrorOverlayReplay(): Plugin {
  * mounted component family. React reports a successful refresh while leaving
  * the old tree mounted until the page is reloaded.
  */
-function figmaReactRefreshBoundaryFallback(): Plugin {
+function giscardReactRefreshBoundaryFallback(): Plugin {
   type ModuleNode = import('vite').ModuleNode
   const hadRefreshBoundary = new Map<string, boolean>()
   const lostRefreshBoundaries = new Set<string>()
   let sendFullReload: (() => void) | null = null
 
   return {
-    name: 'figma-react-refresh-boundary-fallback',
+    name: 'giscard-react-refresh-boundary-fallback',
     apply: 'serve',
     enforce: 'post',
     configureServer(server) {
@@ -332,20 +332,20 @@ function figmaReactRefreshBoundaryFallback(): Plugin {
 }
 
 /**
- * Serves a blank render-target page at /.figma/make/kit.html that
- * the Figma preview script drives directly. The page exposes a
+ * Serves a blank render-target page at /.giscard/make/kit.html that
+ * the Giscard preview script drives directly. The page exposes a
  * registry of every file matching `storiesGlob` on
- * window.__FIGMA__.stories so the design surface can dynamically
+ * window.__GISCARD__.stories so the design surface can dynamically
  * import + mount each entry into its own grid view.
  *
  * Dev-only: `apply: 'serve'` gates the plugin to `vite dev`. Prod
  * builds (`vite build`) skip it entirely so the route doesn't leak
  * into shipped bundles.
  */
-function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin {
+function giscardMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin {
   const storiesGlob = Array.isArray(options.storiesGlob) ? options.storiesGlob : [options.storiesGlob]
-  const ROUTE = '/.figma/make/kit.html'
-  const VIRTUAL_ID = 'virtual:figma-stories'
+  const ROUTE = '/.giscard/make/kit.html'
+  const VIRTUAL_ID = 'virtual:giscard-stories'
   const RESOLVED_ID = '\0' + VIRTUAL_ID
   const STORIES_MODULE = `export const stories = import.meta.glob(${JSON.stringify(storiesGlob)})`
   const HTML_BOOTSTRAP = `<!doctype html>
@@ -355,17 +355,17 @@ function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-<div id="figma-make-kit-root"></div>
+<div id="giscard-make-kit-root"></div>
 <script type="module">
-  import { stories } from 'virtual:figma-stories'
-  window.__FIGMA__ = Object.assign(window.__FIGMA__ ?? {}, { stories })
-  window.dispatchEvent(new CustomEvent('figma.ready'))
+  import { stories } from 'virtual:giscard-stories'
+  window.__GISCARD__ = Object.assign(window.__GISCARD__ ?? {}, { stories })
+  window.dispatchEvent(new CustomEvent('giscard.ready'))
 </script>
 </body>
 </html>`
 
   return {
-    name: 'figma-make-kit',
+    name: 'giscard-make-kit',
     apply: 'serve',
     resolveId(id) {
       if (id === VIRTUAL_ID) return RESOLVED_ID
@@ -397,7 +397,7 @@ function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin
  * installed packages appear in sourcemaps. Vite otherwise reports their real
  * path, such as `libraries/<name>/`.
  */
-function figmaLinkedPackageSourcemaps(): Plugin {
+function giscardLinkedPackageSourcemaps(): Plugin {
   const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8'))
   const linkedPackages = Object.keys({ ...packageJson.dependencies, ...packageJson.devDependencies }).flatMap((name) => {
     const installedDir = path.resolve(__dirname, 'node_modules', name)
@@ -432,7 +432,7 @@ function figmaLinkedPackageSourcemaps(): Plugin {
   }
 
   return {
-    name: 'figma-linked-package-sourcemaps',
+    name: 'giscard-linked-package-sourcemaps',
     enforce: 'pre',
     load(id) {
       // Leave queried imports such as ?raw and ?url to Vite's own loaders.
