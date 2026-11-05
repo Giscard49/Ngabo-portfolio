@@ -10,7 +10,6 @@ import {
   type CreativeBrand,
 } from "./data/portfolio"
 import { AppleLogo, Arrow, ExternalLink, Instagram } from "./components/Icons"
-import { Lightbox } from "./components/Lightbox"
 
 type WorkFilter = "All" | "Websites" | "Mobile Apps"
 type CreativeFilter = "All" | CreativeBrand["id"]
@@ -74,9 +73,6 @@ function App() {
   const [scrolled, setScrolled] = useState(false)
   const [workFilter, setWorkFilter] = useState<WorkFilter>("All")
   const [creativeFilter, setCreativeFilter] = useState<CreativeFilter>("All")
-  const [lightbox, setLightbox] = useState<{ brand: CreativeBrand; index: number } | null>(
-    null,
-  )
 
   const progress = useRef<HTMLSpanElement | null>(null)
   const hero = useRef<HTMLElement | null>(null)
@@ -180,7 +176,6 @@ function App() {
 
   const filterCreative = (filter: CreativeFilter) => {
     setCreativeFilter(filter)
-    setLightbox(null)
   }
 
   return (
@@ -394,8 +389,8 @@ function App() {
                     <span>Projects delivered</span>
                   </div>
                   <div>
-                    <strong>04</strong>
-                    <span>Brands managed</span>
+                    <strong>06+</strong>
+                    <span>Markets served</span>
                   </div>
                 </div>
                 <a className="scroll-cue" href="#about">
@@ -446,7 +441,7 @@ function App() {
                   <span className="micro-label">Currently</span>
                   <p>
                     Building software at Sixcode, and shaping the social worlds of
-                    brands across Rwanda.
+                    brands across Rwanda and beyond.
                   </p>
                   <a className="text-link" href="#contact">
                     Work with me <Arrow diagonal />
@@ -461,7 +456,9 @@ function App() {
                 </p>
                 <p>
                   That range isn’t about doing everything. It’s about seeing the
-                  whole picture — and making every part work harder together.
+                  whole picture — and making every part work harder together. My
+                  work now spans 6+ markets, with many more projects and brand
+                  partnerships than the selection shown here.
                 </p>
                 <div className="stat-row">
                   <div>
@@ -473,7 +470,7 @@ function App() {
                     <span>Projects delivered</span>
                   </div>
                   <div>
-                    <strong>04</strong>
+                    <strong>06+</strong>
                     <span>Markets served</span>
                   </div>
                 </div>
@@ -523,7 +520,7 @@ function App() {
                   <em>made real.</em>
                 </>
               }
-              description="Websites, platforms and mobile applications built to move businesses forward — and make everyday work feel lighter."
+              description="A selected portfolio of websites, platforms and mobile applications built to move businesses forward — with many more delivered across 6+ markets."
             />
 
             <div className="filter-bar">
@@ -558,7 +555,7 @@ function App() {
               <div className="work-group" key={`websites-${workFilter}`}>
                 <div className="work-group-label">
                   <span>Websites & platforms</span>
-                  <span>04 live products</span>
+                  <span>04 featured products</span>
                 </div>
                 <div className="project-grid">
                   {websiteProjects.map((project, index) => (
@@ -684,6 +681,11 @@ function App() {
                 </div>
               </div>
             ) : null}
+
+            <p className="archive-note" data-reveal>
+              A selected portfolio. More websites, platforms and mobile products —
+              across 6+ markets — are available on request.
+            </p>
           </div>
         </section>
 
@@ -704,15 +706,16 @@ function App() {
 
             <div className="social-intro" data-reveal>
               <p className="social-statement">
-                Four brands. Eight years. <em>One consistent point of view.</em>
+                Selected brands. Eight years. <em>One consistent point of view.</em>
               </p>
               <div className="social-note">
                 <p>
                   I designed the graphics, created the visual content, published the
                   posts and managed these brands’ social media presence — primarily
-                  on Instagram.
+                  on Instagram. These are a few of the partnerships; more work
+                  across 6+ markets is available on request.
                 </p>
-                <span className="micro-label">Selected archive · 2018—2026</span>
+                <span className="micro-label">Brand partnerships · 2018—2026</span>
               </div>
             </div>
 
@@ -727,7 +730,6 @@ function App() {
                   ✦
                 </span>
                 All brands
-                <small>04</small>
               </button>
               {creativeBrands.map((brand) => (
                 <button
@@ -739,13 +741,12 @@ function App() {
                 >
                   <img src={brand.logo} alt="" loading="lazy" />
                   {brand.shortName}
-                  <small>{brand.posters.length || "IG"}</small>
                 </button>
               ))}
             </div>
 
             <div className="brand-list" key={`creative-${creativeFilter}`}>
-              {visibleBrands.map((brand, brandIndex) => {
+              {visibleBrands.map((brand) => {
                 const globalIndex = creativeBrands.findIndex((item) => item.id === brand.id)
                 return (
                   <article className="brand-chapter" key={brand.id}>
@@ -795,70 +796,36 @@ function App() {
                         </a>
                       </div>
 
-                      {brand.posters.length ? (
-                        <div className="poster-grid" data-reveal>
-                          {brand.posters.map((poster, index) => (
-                            <button
-                              type="button"
-                              className="poster"
-                              key={poster.src}
-                              onClick={() => setLightbox({ brand, index })}
-                              aria-label={`Open ${poster.title} — ${poster.type} in the ${brand.name} gallery`}
-                              style={
-                                {
-                                  "--delay": `${index * 50}ms`,
-                                  "--brand": brand.accent,
-                                } as CSSProperties
-                              }
-                            >
-                              <img
-                                src={poster.src}
-                                alt={poster.alt}
-                                loading={index < 2 && brandIndex === 0 ? "eager" : "lazy"}
-                                decoding="async"
-                              />
-                              <span className="poster-caption">
-                                <strong>{poster.title}</strong>
-                                <small>{poster.type}</small>
-                              </span>
-                              <span className="poster-open" aria-hidden="true">
-                                <Arrow diagonal />
-                              </span>
-                            </button>
-                          ))}
+                      <div
+                        className="brand-plaque"
+                        data-reveal
+                        style={
+                          {
+                            "--brand": brand.accent,
+                            "--brand-dark": brand.accentDark,
+                          } as CSSProperties
+                        }
+                      >
+                        <div className="plaque-top">
+                          <span>Brand spotlight</span>
+                          <span>{brand.years}</span>
                         </div>
-                      ) : (
-                        <div
-                          className="brand-plaque"
-                          data-reveal
-                          style={
-                            {
-                              "--brand": brand.accent,
-                              "--brand-dark": brand.accentDark,
-                            } as CSSProperties
-                          }
-                        >
-                          <div className="plaque-top">
-                            <span>Brand spotlight</span>
-                            <span>{brand.years}</span>
-                          </div>
-                          <div className="plaque-mark">
-                            <img src={brand.logo} alt={`${brand.name} logo`} loading="lazy" />
-                          </div>
-                          <p className="plaque-name">{brand.shortName}</p>
-                          <div className="plaque-foot">
-                            <span>Social media & creative direction</span>
-                            <a
-                              href={brand.instagram}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {brand.handle} <Arrow diagonal />
-                            </a>
-                          </div>
-                          <span className="plaque-shine" aria-hidden="true" />
+                        <div className="plaque-mark">
+                          <img src={brand.logo} alt={`${brand.name} logo`} loading="lazy" />
                         </div>
-                      )}
+                        <p className="plaque-name">{brand.shortName}</p>
+                        <div className="plaque-foot">
+                          <span>Social media & creative direction</span>
+                          <a
+                            href={brand.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {brand.handle} <Arrow diagonal />
+                          </a>
+                        </div>
+                        <span className="plaque-shine" aria-hidden="true" />
+                      </div>
                     </div>
                   </article>
                 )
@@ -1006,9 +973,13 @@ function App() {
                 <a href="mailto:ngabogiscard@hotmail.com">ngabogiscard@hotmail.com</a>
               </div>
               <div>
-                <span>Call / WhatsApp</span>
-                <a href="https://wa.me/250785036809" target="_blank" rel="noopener noreferrer">
-                  +250 785 036 809
+                <span>Call</span>
+                <a href="tel:+250785036809">+250 785 036 809</a>
+              </div>
+              <div>
+                <span>WhatsApp</span>
+                <a href="https://wa.me/18328658481" target="_blank" rel="noopener noreferrer">
+                  +1 (832) 865-8481
                 </a>
               </div>
               <div>
@@ -1035,7 +1006,7 @@ function App() {
               <a href="https://github.com/giscardng" target="_blank" rel="noopener noreferrer">
                 GitHub <Arrow diagonal />
               </a>
-              <a href="https://wa.me/250785036809" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/18328658481" target="_blank" rel="noopener noreferrer">
                 WhatsApp <Arrow diagonal />
               </a>
             </div>
@@ -1068,16 +1039,6 @@ function App() {
           </div>
         </div>
       </footer>
-
-      {lightbox ? (
-        <Lightbox
-          brand={lightbox.brand.name}
-          posters={lightbox.brand.posters}
-          index={lightbox.index}
-          onClose={() => setLightbox(null)}
-          onChange={(index) => setLightbox((current) => (current ? { ...current, index } : null))}
-        />
-      ) : null}
     </>
   )
 }
